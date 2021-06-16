@@ -41,8 +41,6 @@ const App = () => {
     fetchReports();
   }, []);
 
-  // groupBy reports by investmentId
-
   return (
     <>
       <header>
