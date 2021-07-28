@@ -42,9 +42,14 @@ const InvestmentsPage = () => {
 
   return (
     <>
-      <header>
-        <h1>react-investments v1.0.1</h1>
-      </header>
+      <div className="lg:flex lg:items-center lg:justify-between">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate"
+          >react-investiments v1.0.1</h2>
+        </div>
+      </div>
+
+
       <main>
         {Object.keys(reportsGroupByInvestment).map((investmentId, index) => {
           const investmentLabel = investments.find(investment => investment.id === investmentId).description;
