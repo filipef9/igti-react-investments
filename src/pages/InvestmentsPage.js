@@ -84,4 +84,4 @@ const InvestmentsPage = () => {
   )
 }
 
-export default InvestmentsPage
+export default InvestmentsPage;
