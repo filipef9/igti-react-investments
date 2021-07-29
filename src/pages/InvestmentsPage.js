@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import _ from 'lodash'
 import apiReports from "../services/reportsService";
-import { months } from "../helpers/dateHelpers";
+import Report from "../components/Report";
+import Income from "../components/Income";
 
 const InvestmentsPage = () => {
 
@@ -20,7 +20,7 @@ const InvestmentsPage = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold text-gray-900">
@@ -29,33 +29,23 @@ const InvestmentsPage = () => {
         </div>
       </header>
 
-      <main>
+      <main className="container mx-auto p-4">
         {
           reports.map(({ id, fundName, rendimentoTotal, rendimentoPercentualTotal, incomes }) => {
             return (
-              <div key={id}>
-                <h2>{fundName}</h2>
-                <h3>Rendimento total: R$ {rendimentoTotal.toLocaleString('pt')} ({rendimentoPercentualTotal}%)</h3>
-
-                <table>
-                  <tbody>
-                    {incomes.map(({ id, month, year, value, rendimentoPercentual }) => {
-                      return (
-                        <tr key={id}>
-                          <td>{months[month]}/{year}</td>
-                          <td>R$ {_.round(value, 2).toFixed(2)}</td>
-                          <td>{_.round(rendimentoPercentual, 2).toFixed(2)}%</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+              <Report
+                key={id}
+                fundName={fundName}
+                rendimentoTotal={rendimentoTotal}
+                rendimentoPercentualTotal={rendimentoPercentualTotal}
+              >
+                {incomes.map(income => (<Income key={income.id} income={income} />))}
+              </Report>
             );
           })
         }
       </main>
-    </div>
+    </>
   )
 }
 
