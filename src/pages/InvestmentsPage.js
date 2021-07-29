@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import _ from 'lodash'
 import apiReports from "../services/reportsService";
+import { months } from "../helpers/dateHelpers";
 
 const InvestmentsPage = () => {
 
@@ -41,7 +42,7 @@ const InvestmentsPage = () => {
                     {incomes.map(({ id, month, year, value, rendimentoPercentual }) => {
                       return (
                         <tr key={id}>
-                          <td>{month}/{year}</td>
+                          <td>{months[month]}/{year}</td>
                           <td>R$ {_.round(value, 2).toFixed(2)}</td>
                           <td>{_.round(rendimentoPercentual, 2).toFixed(2)}%</td>
                         </tr>
