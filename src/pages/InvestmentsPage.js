@@ -1,91 +1,60 @@
 import { useState, useEffect } from "react";
-
-import axios from 'axios';
-import _ from 'lodash';
-
-const apiUrl = 'https://3001-bronze-locust-3w9yuf50.ws-us11.gitpod.io';
+import _ from 'lodash'
+import apiReports from "../services/reportsService";
 
 const InvestmentsPage = () => {
 
-  const [investments, setInvestments] = useState([]);
+  const [reports, setReports] = useState([]);
   useEffect(() => {
-    const fetchInvestments = async () => {
+    const fetchReports = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/investments`);
-        setInvestments(response.data);
+        const response = await apiReports.findAll();
+        setReports(response);
       } catch (error) {
         console.log(error.message);
       }
     };
 
-    fetchInvestments();
-  }, []);
-
-  const [reportsGroupByInvestment, setReportsGroupByInvestment] = useState({});
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const response = await axios.get(`${apiUrl}/reports`);
-
-        const groupedBy = _(response.data)
-          .groupBy('investmentId')
-          .value();
-
-        setReportsGroupByInvestment(groupedBy);
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
-
     fetchReports();
   }, []);
 
   return (
-    <>
-      <div className="lg:flex lg:items-center lg:justify-between">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate"
-          >react-investiments v1.0.1</h2>
+    <div>
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold text-gray-900">
+            react-investments v1.0.1
+          </h1>
         </div>
-      </div>
-
+      </header>
 
       <main>
-        {Object.keys(reportsGroupByInvestment).map((investmentId, index) => {
-          const investmentLabel = investments.find(investment => investment.id === investmentId).description;
-          const currentReport = _.sortBy(reportsGroupByInvestment[investmentId], ['month'], ['asc']);
-          const rendimentoTotal = _.round((_.last(currentReport).value - _.first(currentReport).value), 2);
-          const porcentagem = _.round(((_.last(currentReport).value - _.first(currentReport).value) / _.first(currentReport).value * 100), 2);
+        {
+          reports.map(({ id, fundName, rendimentoTotal, rendimentoPercentualTotal, incomes }) => {
+            return (
+              <div key={id}>
+                <h2>{fundName}</h2>
+                <h3>Rendimento total: R$ {rendimentoTotal.toLocaleString('pt')} ({rendimentoPercentualTotal}%)</h3>
 
-          currentReport[0].rendimento = 0.00;
-          for (let i = 1; i < currentReport.length; i++) {
-            currentReport[i].rendimento = ((currentReport[i].value - currentReport[i - 1].value) / currentReport[i - 1].value) * 100;
-          }
-
-          return (
-            <div key={investmentId}>
-              <h2>{investmentLabel}</h2>
-              <h3>Rendimento total: R$ {rendimentoTotal.toLocaleString('pt')} ({porcentagem}%)</h3>
-
-              <table>
-                <tbody>
-                  {currentReport.map(report => {
-                    const { id, month, year, value, rendimento } = report;
-                    return (
-                      <tr key={id}>
-                        <td>{month}/{year}</td>
-                        <td>R$ {_.round(value, 2).toFixed(2)}</td>
-                        <td>{_.round(rendimento, 2).toFixed(2)}%</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          );
-        })}
+                <table>
+                  <tbody>
+                    {incomes.map(({ id, month, year, value, rendimentoPercentual }) => {
+                      return (
+                        <tr key={id}>
+                          <td>{month}/{year}</td>
+                          <td>R$ {_.round(value, 2).toFixed(2)}</td>
+                          <td>{_.round(rendimentoPercentual, 2).toFixed(2)}%</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })
+        }
       </main>
-    </>
+    </div>
   )
 }
 

@@ -24,9 +24,9 @@ const reportsService = {
       const rendimentoPercentualTotal = _.round(((_.last(currentReport).value - _.first(currentReport).value) / _.first(currentReport).value * 100), 2);
       const incomes = currentReport.map(({ id, month, year, value }) => ({ id, month, year, value }));
 
-      incomes[0].rendimento = 0.00;
+      incomes[0].rendimentoPercentual = 0.00;
       for (let i = 1; i < incomes.length; i++) {
-        incomes[i].rendimento = ((incomes[i].value - incomes[i - 1].value) / incomes[i - 1].value) * 100;
+        incomes[i].rendimentoPercentual = ((incomes[i].value - incomes[i - 1].value) / incomes[i - 1].value) * 100;
       }
 
       return {
